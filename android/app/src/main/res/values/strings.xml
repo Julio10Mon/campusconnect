@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Campus Connect</string>
+
+    
+    <string name="facebook_app_id">1612359650348129</string>
+    <string name="facebook_client_token">9afb4c897017ff0d894a9c6d5e25767a</string>
+    <string name="fb_login_protocol_scheme">fb1612359650348129</string>
+</resources>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "962375991254",
+    "project_id": "campusconnect-1b62c",
+    "storage_bucket": "campusconnect-1b62c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962375991254:android:2c226a6fea29a77a52ae77",
+        "android_client_info": {
+          "package_name": "mx.edu.utvm.campusconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962375991254-ema1i9aps8fdcemo9qupc0qcf0dac1m9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mx.edu.utvm.campusconnect",
+            "certificate_hash": "126ba0df8087297ac4f2bbdebe4a8fe5067dd1fd"
+          }
+        },
+        {
+          "client_id": "962375991254-tqhm4qps3bkfq7bvcbeupq45o3mch3cg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrfI_6CNfOi8ri8g_5oevSeOEkkkMD9uI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962375991254-tqhm4qps3bkfq7bvcbeupq45o3mch3cg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

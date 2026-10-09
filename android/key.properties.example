@@ -1,0 +1,17 @@
+# android/key.properties.example
+#
+# 1. Copia este archivo como "key.properties" (sin ".example") en la
+#    carpeta android/ — al lado de este mismo archivo.
+# 2. Genera tu keystore de producción (una sola vez, guárdalo con mucho
+#    cuidado, si lo pierdes no podrás volver a actualizar la app):
+#
+#    keytool -genkey -v -keystore campusconnect-release.jks ^
+#      -keyalg RSA -keysize 2048 -validity 10000 -alias campusconnect
+#
+# 3. Completa los valores reales abajo. NUNCA subas key.properties ni el
+#    archivo .jks a un repositorio público (ya están listados en .gitignore).
+
+storePassword=TU_CONTRASEÑA_DEL_KEYSTORE
+keyPassword=TU_CONTRASEÑA_DE_LA_LLAVE
+keyAlias=campusconnect
+storeFile=../campusconnect-release.jks

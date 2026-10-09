@@ -1,0 +1,36 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.pub-cache/
+.pub/
+*.g.dart
+
+# Android
+android/local.properties
+android/**/gradle-wrapper.jar
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+
+# Firma y credenciales — NUNCA subir esto a un repositorio
+android/key.properties
+*.jks
+*.keystore
+
+# Firebase (generados por flutterfire configure) — normalmente sí se
+# versionan, pero si prefieres mantenerlos fuera del control de versiones
+# puedes descomentar estas líneas:
+# android/app/google-services.json
+# lib/firebase_options.dart
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
