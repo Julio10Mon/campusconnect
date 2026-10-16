@@ -1,0 +1,25 @@
+// android/build.gradle
+//
+// El Android Gradle Plugin y Kotlin se declaran UNA sola vez, en
+// settings.gradle (bloque `plugins`, estilo moderno). Este archivo ya no
+// necesita un bloque `buildscript` con `classpath` — declararlo en ambos
+// lugares provoca conflictos de Gradle.
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
