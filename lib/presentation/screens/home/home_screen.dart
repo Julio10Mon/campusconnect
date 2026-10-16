@@ -10,6 +10,7 @@ import '../../providers/academic_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/compact_rows.dart';
 import '../../widgets/logo_app.dart';
+import '../../widgets/motion.dart';
 import '../../widgets/next_event_hero.dart';
 import '../../widgets/state_placeholders.dart';
 import 'event_form_screen.dart';
@@ -18,7 +19,8 @@ import 'event_form_screen.dart';
 class HomeScreen extends ConsumerWidget {
   final VoidCallback onSeeEvents;
   final VoidCallback onSeeNotices;
-  const HomeScreen({super.key, required this.onSeeEvents, required this.onSeeNotices});
+  final VoidCallback onSeeExplore;
+  const HomeScreen({super.key, required this.onSeeEvents, required this.onSeeNotices, required this.onSeeExplore});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,16 +63,43 @@ class HomeScreen extends ConsumerWidget {
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(AppSpace.gutter, AppSpace.md, AppSpace.gutter, AppSpace.xl),
             children: [
-              Text(greeting, style: text.headlineSmall),
-              const SizedBox(height: 2),
-              Text(DateLabels.longDate(CampusTime.nowWall()), style: text.bodySmall),
+              FadeSlideIn(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(greeting, style: text.headlineSmall),
+                    const SizedBox(height: 2),
+                    Text(DateLabels.longDate(CampusTime.nowWall()), style: text.bodySmall),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpace.md),
+
+              // Accesos rápidos
+              FadeSlideIn(
+                delay: Motion.stagger(1),
+                child: Row(
+                  children: [
+                    _QuickAction(icon: Icons.campaign_rounded, label: 'Avisos', onTap: onSeeNotices),
+                    _QuickAction(icon: Icons.event_rounded, label: 'Eventos', onTap: onSeeEvents),
+                    _QuickAction(icon: Icons.explore_rounded, label: 'Explorar', onTap: onSeeExplore),
+                    _QuickAction(
+                      icon: Icons.add_circle_outline_rounded,
+                      label: 'Publicar',
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EventFormScreen())),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: AppSpace.lg - 4),
 
               // Próximo evento
-              if (feed.nextEvent != null)
-                NextEventHero(event: feed.nextEvent!, onTap: () => context.push('/home/event/${feed.nextEvent!.id}'))
-              else
-                _NoUpcoming(onPublish: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EventFormScreen()))),
+              FadeSlideIn(
+                delay: Motion.stagger(2),
+                child: feed.nextEvent != null
+                    ? NextEventHero(event: feed.nextEvent!, onTap: () => context.push('/home/event/${feed.nextEvent!.id}'))
+                    : _NoUpcoming(onPublish: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EventFormScreen()))),
+              ),
 
               // Esta semana
               if (feed.thisWeek.isNotEmpty) ...[
@@ -152,6 +181,49 @@ class _NoUpcoming extends StatelessWidget {
           const SizedBox(height: AppSpace.md),
           FilledButton.icon(onPressed: onPublish, icon: const Icon(Icons.add), label: const Text('Publicar evento')),
         ],
+      ),
+    );
+  }
+}
+
+/// Acceso rápido a una sección: ícono dentro de un círculo tintado y etiqueta.
+class _QuickAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const _QuickAction({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Expanded(
+      child: Semantics(
+        button: true,
+        label: label,
+        child: ExcludeSemantics(
+          child: PressableScale(
+            pressedScale: 0.94,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
+                      child: Icon(icon, color: colors.primary, size: 24),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(label, style: Theme.of(context).textTheme.labelMedium),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
