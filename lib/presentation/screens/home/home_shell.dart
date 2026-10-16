@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../widgets/app_nav_bar.dart';
 import '../../widgets/motion.dart';
 import 'events_screen.dart';
 import 'explore_screen.dart';
@@ -21,10 +22,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
     final screens = [
-      HomeScreen(onSeeEvents: () => setState(() => _index = 2), onSeeNotices: () => setState(() => _index = 1)),
+      HomeScreen(
+        onSeeEvents: () => setState(() => _index = 2),
+        onSeeNotices: () => setState(() => _index = 1),
+        onSeeExplore: () => setState(() => _index = 3),
+      ),
       const NoticesScreen(),
       const EventsScreen(),
       const ExploreScreen(),
@@ -32,11 +35,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     ];
 
     const destinations = [
-      NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: AppStrings.navHome),
-      NavigationDestination(icon: Icon(Icons.campaign_outlined), selectedIcon: Icon(Icons.campaign_rounded), label: AppStrings.navNotices),
-      NavigationDestination(icon: Icon(Icons.event_outlined), selectedIcon: Icon(Icons.event_rounded), label: AppStrings.navEvents),
-      NavigationDestination(icon: Icon(Icons.explore_outlined), selectedIcon: Icon(Icons.explore_rounded), label: AppStrings.navExplore),
-      NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person_rounded), label: AppStrings.navProfile),
+      AppNavItem(icon: Icons.home_outlined, selectedIcon: Icons.home_rounded, label: AppStrings.navHome),
+      AppNavItem(icon: Icons.campaign_outlined, selectedIcon: Icons.campaign_rounded, label: AppStrings.navNotices),
+      AppNavItem(icon: Icons.event_outlined, selectedIcon: Icons.event_rounded, label: AppStrings.navEvents),
+      AppNavItem(icon: Icons.explore_outlined, selectedIcon: Icons.explore_rounded, label: AppStrings.navExplore),
+      AppNavItem(icon: Icons.person_outline, selectedIcon: Icons.person_rounded, label: AppStrings.navProfile),
     ];
 
     // Índice válido
@@ -44,15 +47,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
     return Scaffold(
       body: FadeOnChange(token: safeIndex, child: IndexedStack(index: safeIndex, children: screens)),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: colors.outline)),
-        ),
-        child: NavigationBar(
-          selectedIndex: safeIndex,
-          onDestinationSelected: (i) => setState(() => _index = i),
-          destinations: destinations,
-        ),
+      bottomNavigationBar: AppNavBar(
+        selectedIndex: safeIndex,
+        onSelected: (i) => setState(() => _index = i),
+        items: destinations,
       ),
     );
   }
