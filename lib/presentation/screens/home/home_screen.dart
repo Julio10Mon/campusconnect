@@ -28,13 +28,11 @@ class HomeScreen extends ConsumerWidget {
     final eventsAsync = ref.watch(eventsStreamProvider);
     final noticesAsync = ref.watch(noticesStreamProvider);
     final userAsync = ref.watch(currentUserProvider);
-    final text = Theme.of(context).textTheme;
 
     final firstName = userAsync.maybeWhen(
       data: (u) => u.nombre.trim().split(RegExp(r'\s+')).first,
       orElse: () => '',
     );
-    final greeting = firstName.isEmpty ? 'Hola' : 'Hola, $firstName';
 
     Future<void> refresh() async {
       ref.invalidate(eventsStreamProvider);
