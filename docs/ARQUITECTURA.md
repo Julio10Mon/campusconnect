@@ -12,4 +12,12 @@ Flujo: `Pantalla → ViewModel → Caso de uso → Repositorio → Firebase`.
 
 Navegación con `go_router`. Servicios en la nube: Firebase Authentication, Cloud Firestore y Cloud Messaging.
 
-> Ajusta los nombres de carpetas a los de tu proyecto si difieren.
+## Estructura de carpetas
+
+```
+lib/
+├── core/            constants, errors, routes, services, theme, utils
+├── domain/          repositories, usecases, validators, home_feed
+├── data/            datasources, models, repositories
+└── presentation/    providers, screens, widgets
+```
