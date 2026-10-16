@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import 'logo_app.dart';
+import 'motion.dart';
 
 /// Encabezado de marca
 class BrandHeader extends StatelessWidget {
@@ -22,7 +23,9 @@ class BrandHeader extends StatelessWidget {
         ),
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(36), bottomRight: Radius.circular(36)),
       ),
-      child: Column(
+      child: FadeSlideIn(
+        offsetY: 10,
+        child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
@@ -47,6 +50,7 @@ class BrandHeader extends StatelessWidget {
             ),
           ],
         ],
+      ),
       ),
     );
   }

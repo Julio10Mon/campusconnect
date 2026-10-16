@@ -11,6 +11,8 @@ import '../../providers/academic_providers.dart';
 import '../../providers/app_providers.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/adaptive_image.dart';
+import '../../widgets/date_badge.dart';
+import '../../widgets/motion.dart';
 import '../../widgets/event_card.dart' show toggleSavedEvent;
 import '../../widgets/state_placeholders.dart';
 import 'event_form_screen.dart';
@@ -86,8 +88,13 @@ class EventDetailScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (event.fotoBase64 != null)
-                  AdaptiveImage(base64Image: event.fotoBase64!, maxHeight: 380, borderRadius: BorderRadius.zero),
-                Padding(
+                  AdaptiveImage(
+                    base64Image: event.fotoBase64!,
+                    maxHeight: 380,
+                    borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
+                  ),
+                FadeSlideIn(
+                  child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,8 +107,20 @@ class EventDetailScreen extends ConsumerWidget {
                             label: Text('Evento finalizado'),
                           ),
                         ),
-                      Text(event.titulo, style: Theme.of(context).textTheme.headlineSmall),
-                      const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DateBadge(
+                            day: DateFormat('d', 'es_MX').format(CampusTime.toWall(event.fecha)),
+                            month: DateFormat('MMM', 'es_MX').format(CampusTime.toWall(event.fecha)).toUpperCase(),
+                            color: event.isPast() ? colors.onSurfaceVariant : colors.secondary,
+                            solid: true,
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(child: Text(event.titulo, style: Theme.of(context).textTheme.headlineSmall)),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
                       Wrap(
                         spacing: 16,
                         runSpacing: 6,
@@ -114,6 +133,7 @@ class EventDetailScreen extends ConsumerWidget {
                       Text(event.descripcion, style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
+                ),
                 ),
               ],
             ),

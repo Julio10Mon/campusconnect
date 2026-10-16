@@ -8,6 +8,7 @@ import '../../data/models/event_model.dart';
 import '../providers/academic_providers.dart';
 import '../providers/app_providers.dart';
 import 'adaptive_image.dart';
+import 'date_badge.dart';
 
 /// Tarjeta de evento con botón real de guardar.
 class EventCard extends ConsumerWidget {
@@ -29,7 +30,8 @@ class EventCard extends ConsumerWidget {
 
     final saved = ref.watch(savedEventIdsProvider).maybeWhen(data: (ids) => ids.contains(event.id), orElse: () => false);
 
-    return Card(
+    return PressableScale(
+      child: Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -43,22 +45,7 @@ class EventCard extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: accent.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(mes, style: TextStyle(color: accent, fontSize: 10.5, fontWeight: FontWeight.w700, letterSpacing: 0.3)),
-                        Text(dia, style: TextStyle(color: accent, fontSize: 20, fontWeight: FontWeight.w800, height: 1.1)),
-                      ],
-                    ),
-                  ),
+                  DateBadge(day: dia, month: mes, color: accent),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -98,6 +85,7 @@ class EventCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
