@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// PROPUESTA de reglas de seguridad para CampusConnect.
+//
+// IMPORTANTE: este archivo NO se ha publicado ni probado con el emulador.
+// Antes de pegarlo en Firebase Console > Firestore > Reglas, COMPARA con las
+// reglas que tienes hoy: reemplazarlas a ciegas puede dejar sin acceso a
+// funciones que hoy sí funcionan (por ejemplo, la gestión de usuarios del
+// panel de administrador).
+//
+// Qué agrega respecto a validar solo en la app:
+//  * La fecha de un evento debe ser posterior a la hora del servidor
+//    (request.time), así que no se puede saltar con una solicitud directa.
+//  * Solo el autor (o un administrador) edita o borra sus publicaciones.
+//  * Un usuario no puede cambiarse el rol ni reactivarse desde el cliente.
+//  * Los "guardados" solo los lee y escribe su dueño.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'admin';
+    }
+    function isOwner(data) { return signedIn() && data.autorUid == request.auth.uid; }
+
+    // Usuarios
+    match /usuarios/{uid} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.rol == 'estudiante';
+      // El propio usuario solo puede cambiar estos campos (nunca rol ni activo).
+      allow update: if (signedIn() && request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['nombre', 'carrera', 'bio', 'fotoBase64']))
+        || isAdmin();
+
+      match /guardados/{eventId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
+    }
+
+    // Eventos
+    match /eventos/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.autorUid == request.auth.uid
+        && request.resource.data.titulo is string
+        && request.resource.data.titulo.size() > 0 && request.resource.data.titulo.size() <= 150
+        && request.resource.data.ubicacion is string
+        && request.resource.data.ubicacion.size() > 0 && request.resource.data.ubicacion.size() <= 140
+        && request.resource.data.fecha is timestamp
+        && request.resource.data.fecha > request.time;
+      allow update: if (isOwner(resource.data) || isAdmin())
+        && request.resource.data.autorUid == resource.data.autorUid
+        && request.resource.data.ubicacion.size() > 0
+        // Si se cambia la fecha, la nueva debe ser futura.
+        && (request.resource.data.fecha == resource.data.fecha
+            || request.resource.data.fecha > request.time);
+      allow delete: if isOwner(resource.data) || isAdmin();
+    }
+
+    // Avisos
+    match /avisos/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.autorUid == request.auth.uid;
+      allow update: if (isOwner(resource.data) || isAdmin())
+        && request.resource.data.autorUid == resource.data.autorUid;
+      allow delete: if isOwner(resource.data) || isAdmin();
+    }
+
+    // Croquis y calendario académico
+    match /configuracion/{doc} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
