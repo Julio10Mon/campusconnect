@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/utils/campus_time.dart';
 import '../../../core/utils/date_labels.dart';
@@ -64,14 +65,7 @@ class HomeScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(AppSpace.gutter, AppSpace.md, AppSpace.gutter, AppSpace.xl),
             children: [
               FadeSlideIn(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(greeting, style: text.headlineSmall),
-                    const SizedBox(height: 2),
-                    Text(DateLabels.longDate(CampusTime.nowWall()), style: text.bodySmall),
-                  ],
-                ),
+                child: _WelcomeBanner(greeting: firstName.isEmpty ? 'Bienvenido de nuevo' : 'Bienvenido de nuevo, $firstName', date: DateLabels.longDate(CampusTime.nowWall())),
               ),
               const SizedBox(height: AppSpace.md),
 
@@ -80,12 +74,13 @@ class HomeScreen extends ConsumerWidget {
                 delay: Motion.stagger(1),
                 child: Row(
                   children: [
-                    _QuickAction(icon: Icons.campaign_rounded, label: 'Avisos', onTap: onSeeNotices),
-                    _QuickAction(icon: Icons.event_rounded, label: 'Eventos', onTap: onSeeEvents),
-                    _QuickAction(icon: Icons.explore_rounded, label: 'Explorar', onTap: onSeeExplore),
+                    _QuickAction(icon: Icons.campaign_rounded, label: 'Avisos', color: AppColors.orange, onTap: onSeeNotices),
+                    _QuickAction(icon: Icons.event_rounded, label: 'Eventos', color: const Color(0xFFE5484D), onTap: onSeeEvents),
+                    _QuickAction(icon: Icons.explore_rounded, label: 'Explorar', color: AppColors.blue, onTap: onSeeExplore),
                     _QuickAction(
                       icon: Icons.add_circle_outline_rounded,
                       label: 'Publicar',
+                      color: AppColors.lightBlue,
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EventFormScreen())),
                     ),
                   ],
@@ -190,12 +185,12 @@ class _NoUpcoming extends StatelessWidget {
 class _QuickAction extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Color color;
   final VoidCallback onTap;
-  const _QuickAction({required this.icon, required this.label, required this.onTap});
+  const _QuickAction({required this.icon, required this.label, required this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
     return Expanded(
       child: Semantics(
         button: true,
@@ -213,8 +208,8 @@ class _QuickAction extends StatelessWidget {
                     Container(
                       width: 52,
                       height: 52,
-                      decoration: BoxDecoration(color: colors.primary.withValues(alpha: 0.12), shape: BoxShape.circle),
-                      child: Icon(icon, color: colors.primary, size: 24),
+                      decoration: BoxDecoration(color: color.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(AppRadius.md)),
+                      child: Icon(icon, color: color, size: 26),
                     ),
                     const SizedBox(height: 6),
                     Text(label, style: Theme.of(context).textTheme.labelMedium),
@@ -224,6 +219,48 @@ class _QuickAction extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Banner de bienvenida con degradado institucional.
+class _WelcomeBanner extends StatelessWidget {
+  final String greeting;
+  final String date;
+  const _WelcomeBanner({required this.greeting, required this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.all(AppSpace.lg - 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        gradient: const LinearGradient(
+          colors: [AppColors.navy, AppColors.blue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [BoxShadow(color: AppColors.blue.withValues(alpha: 0.25), blurRadius: 18, offset: const Offset(0, 8))],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(greeting, style: text.titleLarge?.copyWith(color: Colors.white)),
+                const SizedBox(height: 4),
+                Text('¡Que tengas un gran día!', style: text.bodyMedium?.copyWith(color: Colors.white70)),
+                const SizedBox(height: 10),
+                Text(date, style: text.labelMedium?.copyWith(color: Colors.white60)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Icon(Icons.school_rounded, size: 56, color: Colors.white24),
+        ],
       ),
     );
   }
