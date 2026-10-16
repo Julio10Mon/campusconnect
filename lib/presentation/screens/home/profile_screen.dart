@@ -110,13 +110,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                   child: Semantics(
                     label: 'Foto de perfil de ${user.nombre}',
-                    child: CircleAvatar(
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: Motion.reduced(context) ? 1 : 0.85, end: 1),
+                      duration: Motion.slow,
+                      curve: Curves.easeOutBack,
+                      builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
+                      child: CircleAvatar(
                       radius: 48,
                       backgroundColor: AppColors.navy,
                       backgroundImage: fotoBytes != null ? MemoryImage(fotoBytes) : null,
                       child: fotoBytes == null
                           ? Text(_initials(user.nombre), style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold))
                           : null,
+                    ),
                     ),
                   ),
                 ),
@@ -168,14 +174,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ],
               const SizedBox(height: 18),
               // Estadísticas reales
-              Row(
-                children: [
-                  Expanded(child: _StatTile(value: myEvents.length + myNotices.length, label: 'Publicaciones')),
-                  const SizedBox(width: 10),
-                  Expanded(child: _StatTile(value: myUpcoming, label: 'Próximos creados')),
-                  const SizedBox(width: 10),
-                  Expanded(child: _StatTile(value: savedEvents.length, label: 'Guardados')),
-                ],
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: colors.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: colors.outline),
+                ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(child: _StatTile(value: myEvents.length + myNotices.length, label: 'Publicaciones')),
+                      VerticalDivider(width: 1, color: colors.outline),
+                      Expanded(child: _StatTile(value: myUpcoming, label: 'Próximos creados')),
+                      VerticalDivider(width: 1, color: colors.outline),
+                      Expanded(child: _StatTile(value: savedEvents.length, label: 'Guardados')),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -359,12 +375,8 @@ class _StatTile extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     return Semantics(
       label: '$label: $value',
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-        decoration: BoxDecoration(
-          color: colors.surfaceContainerHighest.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(16),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           children: [
             CountUp(value: value, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colors.primary)),
