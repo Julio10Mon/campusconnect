@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../widgets/app_drawer.dart';
 import '../../widgets/app_nav_bar.dart';
 import '../../widgets/motion.dart';
 import 'events_screen.dart';
@@ -19,6 +20,7 @@ class HomeShell extends ConsumerStatefulWidget {
 
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _index = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         onSeeEvents: () => setState(() => _index = 2),
         onSeeNotices: () => setState(() => _index = 1),
         onSeeExplore: () => setState(() => _index = 3),
+        onOpenMenu: () => _scaffoldKey.currentState?.openDrawer(),
       ),
       const NoticesScreen(),
       const EventsScreen(),
@@ -46,6 +49,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final safeIndex = _index < screens.length ? _index : 0;
 
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: AppDrawer(
+        selectedIndex: safeIndex,
+        items: destinations,
+        onSelected: (i) => setState(() => _index = i),
+      ),
       body: FadeOnChange(token: safeIndex, child: IndexedStack(index: safeIndex, children: screens)),
       bottomNavigationBar: AppNavBar(
         selectedIndex: safeIndex,

@@ -21,7 +21,14 @@ class HomeScreen extends ConsumerWidget {
   final VoidCallback onSeeEvents;
   final VoidCallback onSeeNotices;
   final VoidCallback onSeeExplore;
-  const HomeScreen({super.key, required this.onSeeEvents, required this.onSeeNotices, required this.onSeeExplore});
+  final VoidCallback onOpenMenu;
+  const HomeScreen({
+    super.key,
+    required this.onSeeEvents,
+    required this.onSeeNotices,
+    required this.onSeeExplore,
+    required this.onOpenMenu,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,8 +48,13 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(padding: EdgeInsets.all(8), child: LogoApp(size: 32)),
+        leading: IconButton(
+          icon: const Icon(Icons.menu_rounded),
+          tooltip: 'Abrir menú',
+          onPressed: onOpenMenu,
+        ),
         title: const Text('CampusConnect'),
+        actions: const [Padding(padding: EdgeInsets.only(right: 12), child: LogoApp(size: 32))],
       ),
       body: RefreshIndicator(
         onRefresh: refresh,
