@@ -195,7 +195,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        ..._tabContent(context, myEvents, myNotices, savedEvents),
+        AnimatedSwitcher(
+          duration: Motion.base,
+          switchInCurve: Motion.curve,
+          transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+          child: Column(
+            key: ValueKey(_tab),
+            children: _tabContent(context, myEvents, myNotices, savedEvents),
+          ),
+        ),
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_strings.dart';
+import 'motion.dart';
+import 'skeleton.dart';
 
 /// Ícono de estado
 class _IconBadge extends StatelessWidget {
@@ -9,11 +11,22 @@ class _IconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final badge = Container(
       width: 76,
       height: 76,
       decoration: BoxDecoration(color: color.withValues(alpha: 0.12), shape: BoxShape.circle),
       child: Icon(icon, size: 34, color: color),
+    );
+    if (Motion.reduced(context)) return badge;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.8, end: 1),
+      duration: Motion.slow,
+      curve: Curves.easeOutBack,
+      builder: (context, scale, child) => Opacity(
+        opacity: ((scale - 0.8) / 0.2).clamp(0.0, 1.0),
+        child: Transform.scale(scale: scale, child: child),
+      ),
+      child: badge,
     );
   }
 }
@@ -97,6 +110,6 @@ class LoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator(strokeWidth: 2.6));
+    return const SkeletonList();
   }
 }
